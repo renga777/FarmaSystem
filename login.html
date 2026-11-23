@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>FAE MG — Acesso</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    body { display: flex; flex-direction: column; min-height: 100vh; }
+
+    .login-wrap {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px 16px;
+    }
+
+    .login-box {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 40px;
+      width: 100%;
+      max-width: 420px;
+      box-shadow: var(--shadow-lg);
+    }
+
+    .login-logo {
+      text-align: center;
+      margin-bottom: 32px;
+    }
+
+    .login-logo .pill {
+      background: var(--blue);
+      color: white;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      padding: 4px 12px;
+      border-radius: 6px;
+      display: inline-block;
+      margin-bottom: 12px;
+    }
+
+    .login-logo h1 {
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: var(--text);
+      letter-spacing: -0.5px;
+      margin-bottom: 4px;
+    }
+
+    .login-logo p {
+      font-size: 0.82rem;
+      color: var(--muted);
+    }
+
+    .perfil-selector {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 28px;
+    }
+
+    .perfil-btn {
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      padding: 16px 12px;
+      background: var(--bg);
+      cursor: pointer;
+      text-align: center;
+      transition: border-color 0.2s, background 0.2s;
+    }
+
+    .perfil-btn:hover { border-color: var(--blue); }
+
+    .perfil-btn.ativo {
+      border-color: var(--blue);
+      background: var(--blue-bg);
+    }
+
+    .perfil-btn .perfil-icone {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      margin: 0 auto 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+    }
+
+    .perfil-btn.paciente .perfil-icone { background: #ecfdf5; }
+    .perfil-btn.admin    .perfil-icone { background: #eff6ff; }
+    .perfil-btn.ativo.paciente .perfil-icone { background: #d1fae5; }
+    .perfil-btn.ativo.admin    .perfil-icone { background: #dbeafe; }
+
+    .perfil-btn strong {
+      display: block;
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 2px;
+    }
+
+    .perfil-btn span {
+      font-size: 0.72rem;
+      color: var(--muted);
+    }
+
+    .login-form { display: flex; flex-direction: column; gap: 16px; }
+
+    .login-form .field label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    .login-form .field input {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      font-size: 0.95rem;
+      font-family: inherit;
+      color: var(--text);
+      background: var(--white);
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .login-form .field input:focus {
+      outline: none;
+      border-color: var(--blue);
+      box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
+    }
+
+    .btn-entrar {
+      width: 100%;
+      padding: 13px;
+      background: var(--blue);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      font-family: inherit;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+      margin-top: 4px;
+    }
+
+    .btn-entrar:hover  { background: #1d4ed8; }
+    .btn-entrar:active { transform: scale(0.98); }
+
+    .login-erro {
+      background: var(--red-bg);
+      border: 1px solid var(--red-bd);
+      color: var(--red);
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 0.82rem;
+      font-weight: 500;
+      display: none;
+    }
+
+    .login-erro.visivel { display: block; }
+
+    .login-hint {
+      text-align: center;
+      font-size: 0.75rem;
+      color: var(--subtle);
+      margin-top: 20px;
+      line-height: 1.6;
+    }
+
+    @media (max-width: 480px) {
+      .login-box { padding: 28px 20px; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="nav-brand">
+      <span class="pill">SES-MG</span>
+      <span>Farmácia de Minas</span>
+    </div>
+    <div class="nav-right">
+      <div class="nav-dot"></div>
+      <span class="nav-status">Sistema ativo</span>
+      <button class="theme-toggle" id="themeToggle" title="Alternar tema">
+        <svg id="iconSun" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        <svg id="iconMoon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+    </div>
+  </nav>
+
+  <div class="login-wrap">
+    <div class="login-box">
+      <div class="login-logo">
+        <span class="pill">SES-MG</span>
+        <h1>Bem-vindo ao FAE MG</h1>
+        <p>Consulta de estoque de medicamentos</p>
+      </div>
+
+      <div class="perfil-selector">
+        <button class="perfil-btn paciente ativo" onclick="selecionarPerfil('paciente')">
+          <div class="perfil-icone">🧑</div>
+          <strong>Paciente</strong>
+          <span>Consultar estoque</span>
+        </button>
+        <button class="perfil-btn admin" onclick="selecionarPerfil('admin')">
+          <div class="perfil-icone">🔐</div>
+          <strong>Administrador</strong>
+          <span>Gerenciar unidades</span>
+        </button>
+      </div>
+
+      <div class="login-form">
+        <div class="field">
+          <label>Usuário</label>
+          <input type="text" id="usuario" placeholder="Digite seu usuário" />
+        </div>
+        <div class="field">
+          <label>Senha</label>
+          <input type="password" id="senha" placeholder="Digite sua senha" onkeydown="if(event.key==='Enter') entrar()" />
+        </div>
+        <div class="login-erro" id="erro">Usuário ou senha incorretos.</div>
+        <button class="btn-entrar" onclick="entrar()">Entrar</button>
+      </div>
+
+      <p class="login-hint">
+        Paciente: usuário <strong>paciente</strong> / senha <strong>123</strong><br>
+        Admin: usuário <strong>admin</strong> / senha <strong>admin123</strong>
+      </p>
+    </div>
+  </div>
+
+  <footer>
+    <p>Secretaria de Estado de Saúde de Minas Gerais — SES-MG</p>
+    <div class="footer-right"><span>Dados simulados para demonstração</span></div>
+  </footer>
+
+  <script>
+    let perfilSelecionado = 'paciente';
+
+    function selecionarPerfil(perfil) {
+      perfilSelecionado = perfil;
+      document.querySelectorAll('.perfil-btn').forEach(b => b.classList.remove('ativo'));
+      document.querySelector(`.perfil-btn.${perfil}`).classList.add('ativo');
+      document.getElementById('erro').classList.remove('visivel');
+    }
+
+    const usuarios = {
+      paciente: { usuario: 'paciente', senha: '123',      perfil: 'paciente' },
+      admin:    { usuario: 'admin',    senha: 'admin123', perfil: 'admin'    },
+    };
+
+    function entrar() {
+      const u = document.getElementById('usuario').value.trim();
+      const s = document.getElementById('senha').value.trim();
+      const cred = usuarios[perfilSelecionado];
+
+      if (u === cred.usuario && s === cred.senha) {
+        sessionStorage.setItem('fae_perfil', cred.perfil);
+        sessionStorage.setItem('fae_usuario', u);
+        window.location.href = 'index.html';
+      } else {
+        document.getElementById('erro').classList.add('visivel');
+      }
+    }
+
+    // Tema
+    const toggle   = document.getElementById('themeToggle');
+    const iconSun  = document.getElementById('iconSun');
+    const iconMoon = document.getElementById('iconMoon');
+    const temaSalvo = localStorage.getItem('tema') || 'light';
+    aplicarTema(temaSalvo);
+    toggle.addEventListener('click', () => {
+      const atual = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      localStorage.setItem('tema', atual);
+      aplicarTema(atual);
+    });
+    function aplicarTema(tema) {
+      document.documentElement.setAttribute('data-theme', tema);
+      iconSun.style.display  = tema === 'dark'  ? 'block' : 'none';
+      iconMoon.style.display = tema === 'light' ? 'block' : 'none';
+    }
+  </script>
+</body>
+</html>
